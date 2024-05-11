@@ -63,7 +63,10 @@ int kDTree::leafCount(kDTreeNode* root) const{
 void kDTree::insert(const vector<int> &point) {
     kDTreeNode** pR = &this->root;
     int dim = 0;
-    while (*pR) pR = (point[dim] < (*pR)->data[dim]) ? &((*pR)->left) : &((*pR)->right), dim++;
+    while (*pR) {
+        pR = (point[dim] < (*pR)->data[dim]) ? &((*pR)->left) : &((*pR)->right);
+        if (++dim >= this->k) dim = 0;
+    } 
     *pR = new kDTreeNode(point);
     count++;
 };
