@@ -38,14 +38,25 @@ private:
     kDTreeNode *root;
     int count;
 
-    void inorderTraversal(kDTreeNode* root, int count) const;
-    void preorderTraversal(kDTreeNode* root, int count) const;
-    void postorderTraversal(kDTreeNode* root, int count) const;
+    void clear(kDTreeNode* root) {
+        if (root->left) clear(root->left);
+        if (root->right) clear(root->right);
+        delete root;
+    }
+
+    void inorderTraversal(kDTreeNode* root, int &count) const;
+    void preorderTraversal(kDTreeNode* root, int &count) const;
+    void postorderTraversal(kDTreeNode* root, int &count) const;
     int height(kDTreeNode* root) const;
     int leafCount(kDTreeNode* root) const;
 public:
     kDTree(int k = 2): k(k), root(nullptr), count(0) {};
-    ~kDTree();
+    ~kDTree() {
+        if (this->root) {
+            clear(this->root);
+            count = 0;
+        }
+    };
 
     const kDTree &operator=(const kDTree &other);
     kDTree(const kDTree &other);

@@ -4,37 +4,49 @@
  * */
 
 // Class kDTree
-void kDTree::inorderTraversal(kDTreeNode* root, int count) const {
+void kDTree::inorderTraversal(kDTreeNode* root, int &count) const {
     if (!root) return;
-    inorderTraversal(root->left, --count);
-    if (count <= 0) cout << *root;
-    else cout << *root << " ";
-    inorderTraversal(root->right, --count);
+    inorderTraversal(root->left, count);
+    if (count <= 1) cout << *root;
+    else {
+            cout << *root << " ";
+            count--;
+    }
+    inorderTraversal(root->right, count);
 };
 void kDTree::inorderTraversal() const{
-    this->inorderTraversal(this->root,this->count);
+    int tmp = this->count;
+    this->inorderTraversal(this->root,tmp);
 };
 
-void kDTree::preorderTraversal(kDTreeNode* root, int count) const {
+void kDTree::preorderTraversal(kDTreeNode* root, int &count) const {
     if (!root) return;
-    if (count <= 0) cout << *root;
-    else cout << *root << " ";
-    preorderTraversal(root->left, --count);
-    preorderTraversal(root->right, --count);
+    if (count <= 1) cout << *root;
+    else {
+            cout << *root << " ";
+            count--;
+        }
+    preorderTraversal(root->left, count);
+    preorderTraversal(root->right, count);
 };
 void kDTree::preorderTraversal() const{
-    this->preorderTraversal(this->root,this->count);
+    int tmp = this->count;
+    this->preorderTraversal(this->root,tmp);
 };
 
-void kDTree::postorderTraversal(kDTreeNode* root, int count) const {
+void kDTree::postorderTraversal(kDTreeNode* root, int &count) const {
     if (!root) return;
     postorderTraversal(root->left, --count);
     postorderTraversal(root->right, --count);
-    if (count <= 0) cout << *root;
-    else cout << *root << " ";
+    if (count <= 1) cout << *root;
+    else {
+            cout << *root << " ";
+            count--;
+    }
 };
 void kDTree::postorderTraversal() const{
-    this->postorderTraversal(this->root,this->count);
+    int tmp = this->count;
+    this->postorderTraversal(this->root,tmp);
 };
 
 int kDTree::height(kDTreeNode* root) const{
@@ -46,5 +58,7 @@ int kDTree::leafCount(kDTreeNode* root) const{
     if(!root) return 0;
     if (!root->left && !root->right) return 1;
     return leafCount(root->left) + leafCount(root->right);
-}
+};
+
+
 // end Class kDTree
