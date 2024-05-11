@@ -44,6 +44,13 @@ private:
         delete root;
     }
 
+    kDTreeNode* deepCopyNode(const kDTreeNode* pR) {
+        if (!pR) return nullptr;
+        kDTreeNode* pNew = new kDTreeNode(pR->data);
+        pNew->left = deepCopyNode(pR->left);
+        pNew->right = deepCopyNode(pR->right);
+        return pNew;
+    };
     void inorderTraversal(kDTreeNode* root, int &count) const;
     void preorderTraversal(kDTreeNode* root, int &count) const;
     void postorderTraversal(kDTreeNode* root, int &count) const;
@@ -58,10 +65,17 @@ public:
         }
     };
 
-    const kDTree &operator=(const kDTree &other);
-    kDTree(const kDTree &other);
+    const kDTree &operator=(const kDTree &other) {
+        this->count = other.count;
+        this->k = other.k;
+        this->root = deepCopyNode(other.root);
+    };
 
-    
+    kDTree(const kDTree &other){
+        this->count = other.count;
+        this->k = other.k;
+        this->root = deepCopyNode(other.root);
+    };
 
     void inorderTraversal() const;
     void preorderTraversal() const;
