@@ -18,16 +18,17 @@ void tc1()
 
 void tc2()
 {
-    kDTree tree(2);
-    tree.insert({5, 6});
-    tree.insert({2, 2});
-    tree.insert({7, 3});
-    tree.insert({2, 8});
-    tree.insert({8, 7});
-    tree.insert({8, 1});
-    tree.insert({9, 4});
-    tree.insert({3, 5});
-    tree.insert({9, 2});
+    kDTree tree(3);
+    tree.insert({5, 6, 0});
+    tree.insert({2, 2, 3});
+    tree.insert({7, 3, 1});
+    tree.insert({2, 2, 8});
+    tree.insert({8, 7, 3});
+    tree.insert({2, 2, 1});
+    tree.insert({2, 2, 9});
+    tree.insert({2, 1, 0});
+    // tree.insert({9, 2});
+    cout << tree.search({2, 2, 1}) << endl;
     tree.preorderTraversal();
 }
 

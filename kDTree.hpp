@@ -56,6 +56,26 @@ private:
     void postorderTraversal(kDTreeNode* root, int &count) const;
     int height(kDTreeNode* root) const;
     int leafCount(kDTreeNode* root) const;
+    void runDim(int& dim) { if (++dim >= k) dim = 0; }
+    bool samePoint(const vector<int> &p1, const vector<int> &p2) {
+        for (int i = 0; i < k; i++) {
+            if (p1[i] != p2[i]) return false;
+        }
+        return true;
+    }
+    bool search(kDTreeNode* pR, const vector<int> &point, int dim) {
+        if (!pR) return false;
+        if (samePoint(pR->data,point)) return true;
+        dim %= this->k;
+        if (point[dim] < pR->data[dim]) { 
+            cout << "left ";
+            return search(pR->left,point,++dim);
+        }
+        else {
+            cout << "right ";
+            return search(pR->right,point,++dim);
+        }
+    }
 public:
     kDTree(int k = 2): k(k), root(nullptr), count(0) {};
     ~kDTree() {

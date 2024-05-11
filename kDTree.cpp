@@ -65,7 +65,7 @@ void kDTree::insert(const vector<int> &point) {
     int dim = 0;
     while (*pR) {
         pR = (point[dim] < (*pR)->data[dim]) ? &((*pR)->left) : &((*pR)->right);
-        if (++dim >= this->k) dim = 0;
+        runDim(dim);
     } 
     *pR = new kDTreeNode(point);
     count++;
@@ -76,7 +76,7 @@ void kDTree::remove(const vector<int> &point){
 };
 
 bool kDTree::search(const vector<int> &point){
-    return false;
+    return search(this->root,point,0);
 };
 
 void kDTree::buildTree(const vector<vector<int>> &pointList){
