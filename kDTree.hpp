@@ -69,6 +69,7 @@ public:
         this->count = other.count;
         this->k = other.k;
         this->root = deepCopyNode(other.root);
+        return *this;
     };
 
     kDTree(const kDTree &other){
