@@ -36,20 +36,28 @@ class kDTree
 private:
     int k;
     kDTreeNode *root;
+    int count;
 
+    void inorderTraversal(kDTreeNode* root, int count) const;
+    void preorderTraversal(kDTreeNode* root, int count) const;
+    void postorderTraversal(kDTreeNode* root, int count) const;
+    int height(kDTreeNode* root) const;
+    int leafCount(kDTreeNode* root) const;
 public:
-    kDTree(int k = 2);
+    kDTree(int k = 2): k(k), root(nullptr), count(0) {};
     ~kDTree();
 
     const kDTree &operator=(const kDTree &other);
     kDTree(const kDTree &other);
 
+    
+
     void inorderTraversal() const;
     void preorderTraversal() const;
     void postorderTraversal() const;
-    int height() const;
-    int nodeCount() const;
-    int leafCount() const;
+    int height() const { return height(this->root); };
+    int nodeCount() const { return count; };
+    int leafCount() const { return leafCount(this->root); };
 
     void insert(const vector<int> &point);
     void remove(const vector<int> &point);
