@@ -14,6 +14,21 @@ struct kDTreeNode
         this->left = left;
         this->right = right;
     }
+
+    friend ostream &operator<<(ostream &os, const kDTreeNode &node)
+    {
+        os << "(";
+        for (int i = 0; i < node.data.size(); i++)
+        {
+            os << node.data[i];
+            if (i != node.data.size() - 1)
+            {
+                os << ", ";
+            }
+        }
+        os << ")";
+        return os;
+    }
 };
 
 class kDTree
@@ -40,7 +55,7 @@ public:
     void remove(const vector<int> &point);
     bool search(const vector<int> &point);
     void buildTree(const vector<vector<int>> &pointList);
-    void nearestNeighbour(const vector<int> &target, kDTreeNode *best);
+    void nearestNeighbour(const vector<int> &target, kDTreeNode *&best);
     void kNearestNeighbour(const vector<int> &target, int k, vector<kDTreeNode *> &bestList);
 };
 
@@ -48,9 +63,6 @@ class kNN
 {
 private:
     int k;
-    Dataset *X_train;
-    Dataset *y_train;
-    int numClasses;
 
 public:
     kNN(int k = 5);
