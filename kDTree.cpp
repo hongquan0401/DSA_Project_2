@@ -69,10 +69,20 @@ void kDTree::insert(const vector<int> &point) {
 };
 
 void kDTree::remove(const vector<int> &point){
-
+    return;
 };
 
 bool kDTree::search(const vector<int> &point){
+    return false;
+};
 
+void kDTree::buildTree(const vector<vector<int>> &pointList){
+    return;
+};
+void kDTree::nearestNeighbour(const vector<int> &target, kDTreeNode *&best){
+    return;
+};
+void kDTree::kNearestNeighbour(const vector<int> &target, int k, vector<kDTreeNode *> &bestList){
+    return;
 };
 // end Class kDTree
