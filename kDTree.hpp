@@ -18,7 +18,7 @@ struct kDTreeNode
     friend ostream &operator<<(ostream &os, const kDTreeNode &node)
     {
         os << "(";
-        for (int i = 0; i < node.data.size(); i++)
+        for (size_t i = 0; i < node.data.size(); i++)
         {
             os << node.data[i];
             if (i != node.data.size() - 1)
@@ -91,9 +91,9 @@ private:
         }
         return minPoint(root,findMin(root->left,alpha,d+1),findMin(root->right,alpha,d+1),alpha);
     }
-    kDTreeNode* removePoint(kDTreeNode* pR,const vector<int> &point, int d) {
+    kDTreeNode* removePoint(kDTreeNode* pR, const vector<int> &point, int d) {
         if (!pR) return nullptr;
-        int cd = d%this->k;
+        int cd = d % this->k;
         if (samePoint(pR->data,point)) {
             if (pR->right) {
                 kDTreeNode* min = findMin(pR->right,cd);
@@ -114,8 +114,11 @@ private:
         if (point[cd] < pR->data[cd])
             pR->left = removePoint(pR->left,point,d+1);
         else pR->right = removePoint(pR->right,point,d+1);
-    }
+        return pR;
+    };
     kDTreeNode* removePoint(const vector<int> &point) { return removePoint(this->root,point,0); }
+    void mergeSort(vector<vector<int>> &list, int d);
+    kDTreeNode* buildTree(vector<vector<int>> &pointList, int d);
 public:
     kDTree(int k = 2): k(k), root(nullptr), count(0) {};
     ~kDTree() {

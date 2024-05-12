@@ -42,19 +42,19 @@ void tc2()
     tree.insert({2, 2, 9});
     tree.insert({2, 1, 0});
     // tree.insert({9, 2});
-    tree.remove({8, 7, 0});
+    tree.remove({8, 7, 3});
     // cout << *(tree.findMin(2)) << '\n';
     // cout << tree.search({2, 2, 1}) << endl;
     tree.preorderTraversal();
 }
 
-// void tc3()
-// {
-//     kDTree tree(2);
-//     vector<vector<int>> pointList = {{5, 6}, {2, 2}, {7, 3}, {2, 8}, {8, 7}, {8, 1}, {9, 4}, {3, 5}};
-//     tree.buildTree(pointList);
-//     tree.preorderTraversal();
-// }
+void tc3()
+{
+    kDTree tree(2);
+    vector<vector<int>> pointList = {{5, 6}, {2, 2}, {7, 3}, {2, 8}, {8, 7}, {8, 1}, {9, 4}, {3, 5}};
+    tree.buildTree(pointList);
+    tree.preorderTraversal();
+}
 
 // void tc4()
 // {
@@ -160,7 +160,7 @@ void tc2()
 
 int main(int argc, const char *argv[])
 {
-    tc2();
+    tc3();
 
     return 0;
 }
