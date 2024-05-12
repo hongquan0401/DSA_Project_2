@@ -77,8 +77,10 @@ void kDTree::remove(const vector<int> &point){
         return;
     }
     kDTreeNode* tmp = removePoint(point);
-    if (!tmp && this->count > 1) cout << --count;
-    else if (!tmp && this->count <= 1) cout << "0";
+    if (!tmp && this->count > 1) this->count-1;
+    else if (!tmp && this->count <= 1) this->count = 0;
+    else this->count--;
+    cout << this->count << " ";
     return;
 };
 
