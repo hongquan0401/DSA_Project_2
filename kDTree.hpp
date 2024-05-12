@@ -76,6 +76,46 @@ private:
             return search(pR->right,point,++dim);
         }
     }
+    kDTreeNode* minPoint(kDTreeNode* x, kDTreeNode* y, kDTreeNode* z, int dim){
+        kDTreeNode* res = x;
+        if (y && y->data[dim] < res->data[dim]) res = y;
+        if (z && z->data[dim] < res->data[dim]) res = z;
+        return res;
+    }
+    kDTreeNode* findMin(kDTreeNode* root, int alpha, int d){
+        if (!root) return nullptr;
+        d%=this->k;
+        if (alpha == d) {
+            if (!root->left) return root;
+            return findMin(root,alpha,d+1);
+        }
+        return minPoint(root,findMin(root->left,alpha,d+1),findMin(root->right,alpha,d+1),alpha);
+    }
+    kDTreeNode* removePoint(kDTreeNode* pR,const vector<int> &point, int d) {
+        if (!pR) return nullptr;
+        int cd = d%this->k;
+        if (samePoint(pR->data,point)) {
+            if (pR->right) {
+                kDTreeNode* min = findMin(pR->right,cd);
+                copyPoint(pR->data,min->data);
+                pR->right = removePoint(pR->right,min->data,d+1);
+            }
+            else if (pR->left){
+                kDTreeNode* min = findMin(pR->left,cd);
+                copyPoint(pR->data,min->data);
+                pR->right = removePoint(pR->left,min->data,d+1);
+            }
+            else {
+                delete pR;
+                return nullptr;
+            }
+            return pR;
+        }
+        if (point[cd] < pR->data[cd])
+            pR->left = removePoint(pR->left,point,d+1);
+        else pR->right = removePoint(pR->right,point,d+1);
+    }
+    kDTreeNode* removePoint(const vector<int> &point) { return removePoint(this->root,point,0); }
 public:
     kDTree(int k = 2): k(k), root(nullptr), count(0) {};
     ~kDTree() {
@@ -111,6 +151,14 @@ public:
     void buildTree(const vector<vector<int>> &pointList);
     void nearestNeighbour(const vector<int> &target, kDTreeNode *&best);
     void kNearestNeighbour(const vector<int> &target, int k, vector<kDTreeNode *> &bestList);
+
+    kDTreeNode* findMin(kDTreeNode* pR, int dim) { return findMin(pR,dim,0); };
+    kDTreeNode* findMin(int dim) { return findMin(this->root,dim,0); };
+    void copyPoint(vector<int> &a,const vector<int> &b) {
+        for (int i = 0; i < this->k; i++) {
+            a[i] = b[i];
+        }
+    };
 };
 
 class kNN
