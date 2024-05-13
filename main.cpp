@@ -79,22 +79,22 @@ void tc3()
 //     tree.preorderTraversal();
 // }
 
-// void tc6()
-// {
-//     kDTree tree(2);
-//     tree.insert({5, 6});
-//     tree.insert({2, 2});
-//     tree.insert({7, 3});
-//     tree.insert({2, 8});
-//     tree.insert({3, 5});
-//     tree.insert({8, 2});
-//     tree.insert({8, 7});
-//     tree.insert({9, 2});
-//     tree.insert({9, 5});
-//     kDTreeNode *best = nullptr;
-//     tree.nearestNeighbour({9, 3}, best);
-//     cout << "Nearest neighbour of (9, 3) is " << *best << endl;
-// }
+void tc6()
+{
+    kDTree tree(2);
+    tree.insert({5, 6});
+    tree.insert({2, 2});
+    tree.insert({7, 3});
+    tree.insert({2, 8});
+    tree.insert({3, 5});
+    tree.insert({8, 2});
+    tree.insert({8, 7});
+    tree.insert({9, 2});
+    tree.insert({9, 5});
+    kDTreeNode *best = nullptr;
+    tree.nearestNeighbour({9, 3}, best);
+    cout << "Nearest neighbour of (9, 3) is " << *best << endl;
+}
 
 // void tc7()
 // {
@@ -160,7 +160,7 @@ void tc3()
 
 int main(int argc, const char *argv[])
 {
-    tc3();
+    tc6();
 
     return 0;
 }

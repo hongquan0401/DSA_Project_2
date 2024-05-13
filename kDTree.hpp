@@ -122,7 +122,7 @@ private:
     void mergeSort(vector<vector<int>> &list, int d);
     kDTreeNode* buildTree(vector<vector<int>> &pointList, int d);
 
-    kDTreeNode* nearestNeighbour(kDTreeNode* root, const vector<int> &target, int d);
+    kDTreeNode* nearestNeighbour(kDTreeNode* pR, const vector<int> &target, int d);
 public:
     kDTree(int k = 2): k(k), root(nullptr), count(0) {};
     ~kDTree() {

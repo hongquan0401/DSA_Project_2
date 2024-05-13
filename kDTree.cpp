@@ -8,11 +8,11 @@
 void kDTree::mergeSort(vector<vector<int>> &list, int d) {
     if (list.size() < 2) return;
     int mid = list.size()/2;
-    vector<vector<int>> leftList(list.begin(),list.begin()+mid),
-                        rightList(list.begin()+mid,list.end());
-    mergeSort(leftList,d);
-    mergeSort(rightList,d);
-    int nL = leftList.size(),
+    vector<vector<int>> leftList(list.begin(), list.begin()+mid), 
+                        rightList(list.begin()+mid, list.end());
+    mergeSort(leftList, d);
+    mergeSort(rightList, d);
+    int nL = leftList.size(), 
         nR = rightList.size();
     int i = 0, j = 0, k = 0; // i for list, j for leftList, k for rightList
     while (j < nL && k < nR) { // insert while both leftList and rightList not empty
@@ -25,7 +25,7 @@ void kDTree::mergeSort(vector<vector<int>> &list, int d) {
 kDTreeNode* kDTree::buildTree(vector<vector<int>> &pointList, int d) {
     if (pointList.empty()) return nullptr;
     int mid = (pointList.size() - 1)/2;
-    mergeSort(pointList,d);
+    mergeSort(pointList, d);
     kDTreeNode* pR = new kDTreeNode(pointList[mid]);
 
     // split pointList to left and right
@@ -40,8 +40,8 @@ kDTreeNode* kDTree::buildTree(vector<vector<int>> &pointList, int d) {
 
     // recursion
 
-    pR->left = buildTree(leftList,(d+1)%k);
-    pR->right = buildTree(rightList,(d+1)%k);
+    pR->left = buildTree(leftList, (d+1)%k);
+    pR->right = buildTree(rightList, (d+1)%k);
     return pR;
 }
 
@@ -58,7 +58,7 @@ void kDTree::inorderTraversal(kDTreeNode* root, int &count) const {
 };
 void kDTree::inorderTraversal() const{
     int tmp = this->count;
-    this->inorderTraversal(this->root,tmp);
+    this->inorderTraversal(this->root, tmp);
 };
 
 void kDTree::preorderTraversal(kDTreeNode* root, int &count) const {
@@ -73,7 +73,7 @@ void kDTree::preorderTraversal(kDTreeNode* root, int &count) const {
 };
 void kDTree::preorderTraversal() const{
     int tmp = this->count;
-    this->preorderTraversal(this->root,tmp);
+    this->preorderTraversal(this->root, tmp);
 };
 
 void kDTree::postorderTraversal(kDTreeNode* root, int &count) const {
@@ -88,12 +88,12 @@ void kDTree::postorderTraversal(kDTreeNode* root, int &count) const {
 };
 void kDTree::postorderTraversal() const{
     int tmp = this->count;
-    this->postorderTraversal(this->root,tmp);
+    this->postorderTraversal(this->root, tmp);
 };
 
 int kDTree::height(kDTreeNode* root) const{
     if (!root) return 0;
-    else return max(height(root->left),height(root->right)) + 1;
+    else return max(height(root->left), height(root->right)) + 1;
 }
 
 int kDTree::leafCount(kDTreeNode* root) const{
@@ -127,7 +127,7 @@ void kDTree::remove(const vector<int> &point){
 };
 
 bool kDTree::search(const vector<int> &point){
-    return search(this->root,point,0);
+    return search(this->root, point, 0);
 };
 
 void kDTree::buildTree(const vector<vector<int>> &pointList){
@@ -139,19 +139,61 @@ void kDTree::buildTree(const vector<vector<int>> &pointList){
         return;
     }
     
-    vector<vector<int>> list(pointList.begin(),pointList.end());
-    this->root = buildTree(list,0);
+    vector<vector<int>> list(pointList.begin(), pointList.end());
+    this->root = buildTree(list, 0);
     return;
 };
 
-kDTreeNode* kDTree::nearestNeighbour(kDTreeNode* root, const vector<int> &target, int d){
-    
+// count square of distance of 2 vector
+long int sqr_distance(const vector<int> &v1, const vector<int> &v2) {
+    long int res = 0;
+    for (size_t i = 0; i < v1.size(); i++){
+        res += pow((v1[i] - v2[i]), 2); 
+    }
+    return res;
+};
+
+// to find closest from n1(traver 1st) and n2(traverse after n1) to target
+kDTreeNode* closest_toTarget(kDTreeNode* n1, kDTreeNode* n2, const vector<int> &target){
+    if (!n1) return n2;
+    if (!n2) return n1;
+
+    long int    d1 = sqr_distance(n1->data, target), 
+                d2 = sqr_distance(n2->data, target);
+    if (d1 < d2) return n1;
+    else return n2;
+}
+
+kDTreeNode* kDTree::nearestNeighbour(kDTreeNode* pR, const vector<int> &target, int d){
+    if (!pR) return nullptr;
+    kDTreeNode* nextBranch = nullptr, * otherBranch = nullptr;
+    // to determine next branch to traverse
+    if (target[k] < pR->data[k]) {
+        nextBranch = pR->left;
+        otherBranch = pR->right;
+    }
+    else {
+        nextBranch = pR->right;
+        otherBranch = pR->left;
+    }
+    // recursion
+    kDTreeNode* temp = nearestNeighbour(nextBranch, target, (d + 1) % this->k);
+    kDTreeNode* best = closest_toTarget(pR, temp, target);
+    // check if R>= r then change to otherBranch
+    long int R_sqr = sqr_distance(target, best->data), 
+             r_sqr = pow(target[d] - pR->data[d], 2);
+    if (R_sqr >= r_sqr) {
+        temp = nearestNeighbour(otherBranch, target, (d + 1) % this->k);
+        best = closest_toTarget(best, temp, target); // update best 
+    }
+    return best;
 };
 
 void kDTree::nearestNeighbour(const vector<int> &target, kDTreeNode *&best){
-
+    best = nearestNeighbour(this->root, target, 0);
     return;
 };
+
 void kDTree::kNearestNeighbour(const vector<int> &target, int k, vector<kDTreeNode *> &bestList){
     return;
 };
