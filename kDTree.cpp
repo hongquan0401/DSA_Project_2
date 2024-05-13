@@ -143,7 +143,13 @@ void kDTree::buildTree(const vector<vector<int>> &pointList){
     this->root = buildTree(list,0);
     return;
 };
+
+kDTreeNode* kDTree::nearestNeighbour(kDTreeNode* root, const vector<int> &target, int d){
+    
+};
+
 void kDTree::nearestNeighbour(const vector<int> &target, kDTreeNode *&best){
+
     return;
 };
 void kDTree::kNearestNeighbour(const vector<int> &target, int k, vector<kDTreeNode *> &bestList){
