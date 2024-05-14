@@ -101,13 +101,13 @@ private:
         // if root->data = point
         if (samePoint(pR->data, point)) {
             if (pR->right) {
-                kDTreeNode* min = findMin(pR->right, cd, 1);
+                kDTreeNode* min = findMin(pR->right, cd, cd + 1);
                 // copyPoint(pR->data, min->data);
                 pR->data = min->data;
                 pR->right = removePoint(pR->right, min->data, d + 1);
             }
             else if (pR->left){
-                kDTreeNode* min = findMin(pR->left, cd, 1);
+                kDTreeNode* min = findMin(pR->left, cd, cd + 1);
                 // copyPoint(pR->data, min->data);
                 pR->data = min->data;
                 pR->right = removePoint(pR->left, min->data, d + 1);
