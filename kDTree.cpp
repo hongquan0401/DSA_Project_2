@@ -168,7 +168,7 @@ kDTreeNode* kDTree::nearestNeighbour(kDTreeNode* pR, const vector<int> &target, 
     if (!pR) return nullptr;
     kDTreeNode* nextBranch = nullptr, * otherBranch = nullptr;
     // to determine next branch to traverse
-    if (target[k] < pR->data[k]) {
+    if (target[d] < pR->data[d]) {
         nextBranch = pR->left;
         otherBranch = pR->right;
     }
@@ -194,7 +194,59 @@ void kDTree::nearestNeighbour(const vector<int> &target, kDTreeNode *&best){
     return;
 };
 
+void mergesortList(vector<kDTreeNode*> &list, const vector<int> &target) {
+    if (list.size() < 2) return;
+    int mid = list.size() / 2;
+    vector<kDTreeNode*> leftList(list.begin(), list.begin()+mid), 
+                        rightList(list.begin()+mid, list.end());
+    mergesortList(leftList, target);
+    mergesortList(rightList, target);
+    int nL = leftList.size(),
+        nR = rightList.size();
+    int i = 0, j = 0, k = 0; //    i for list, j for leftList, k for rightList
+    while (j < nL && k < nR) {
+        if (sqr_distance(leftList[j]->data,target) < sqr_distance(rightList[k]->data,target))
+            list[i++] = leftList[j++];
+        else list[i++] = rightList[k++];
+    }
+    while (j < nL) list[i++] = leftList[j++];
+    while (k <nR) list[i++] = rightList[k++];
+};
+
+kDTreeNode* kDTree::knearestNeighbour(kDTreeNode* pR, const vector<int> &target, int k, int d,
+                                      vector<kDTreeNode*> &list)
+{
+    if (!pR) return nullptr;
+    kDTreeNode* nextBranch = nullptr, * otherBranch = nullptr;
+    // to determine next branch to traverse
+    if (target[d] < pR->data[d]) {
+        nextBranch = pR->left;
+        otherBranch = pR->right;
+    }
+    else {
+        nextBranch = pR->right;
+        otherBranch = pR->left;
+    }
+    // recursion
+    kDTreeNode* temp = knearestNeighbour(nextBranch, target, k, (d + 1) % this->k, list);
+    // push travered node
+    list.push_back(pR);
+    kDTreeNode* best = closest_toTarget(pR, temp, target);
+    
+    // check if R>= r then change to otherBranch
+    long int R_sqr = sqr_distance(target, best->data), 
+             r_sqr = pow(target[d] - pR->data[d], 2);
+    if (R_sqr >= r_sqr) {
+        temp = knearestNeighbour(otherBranch, target, k, (d + 1) % this->k, list);
+        //best = closest_toTarget(best, temp, target); // update best 
+    }
+    mergesortList(list,target);
+    if (k < (int)list.size()) list.resize(k);
+    return pR;
+};
+
 void kDTree::kNearestNeighbour(const vector<int> &target, int k, vector<kDTreeNode *> &bestList){
+    knearestNeighbour(this->root, target, k, 0, bestList);
     return;
 };
 // end Class kDTree

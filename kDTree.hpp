@@ -123,6 +123,8 @@ private:
     kDTreeNode* buildTree(vector<vector<int>> &pointList, int d);
 
     kDTreeNode* nearestNeighbour(kDTreeNode* pR, const vector<int> &target, int d);
+    kDTreeNode* knearestNeighbour(kDTreeNode* pR, const vector<int> &target, int k, int d,
+                                        vector<kDTreeNode*> &list);
 public:
     kDTree(int k = 2): k(k), root(nullptr), count(0) {};
     ~kDTree() {
