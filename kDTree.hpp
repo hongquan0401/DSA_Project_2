@@ -39,10 +39,14 @@ private:
     int count;
 
     void clear(kDTreeNode* root) {
-        if (root->left) clear(root->left);
-        if (root->right) clear(root->right);
-        delete root;
-    }
+        if (!root) return;
+        else {
+            if (root->left) clear(root->left);
+            if (root->right) clear(root->right);
+            delete root;
+            return;
+        }
+    };
 
     kDTreeNode* deepCopyNode(const kDTreeNode* pR) {
         if (!pR) return nullptr;
@@ -84,16 +88,17 @@ private:
     // find min Node to replace remove Node
     kDTreeNode* findMin(kDTreeNode* root, int alpha, int d){
         if (!root) return nullptr;
-        d %= this->k;
-        if (alpha == d) {
+        int cd = d % this->k;
+        if (alpha == cd) {
             if (!root->left) return root;
-            return findMin(root, alpha, (d + 1) % k);
+            return findMin(root->left, alpha, d + 1);
         }
         return minPoint(root, findMin(root->left, alpha, d + 1), findMin(root->right, alpha, d + 1), alpha);
     }
     kDTreeNode* removePoint(kDTreeNode* pR, const vector<int> &point, int d) {
         if (!pR) return nullptr;
         int cd = d % this->k;
+        // if root->data = point
         if (samePoint(pR->data, point)) {
             if (pR->right) {
                 kDTreeNode* min = findMin(pR->right, cd);
@@ -106,17 +111,18 @@ private:
                 // copyPoint(pR->data, min->data);
                 pR->data = min->data;
                 pR->right = removePoint(pR->left, min->data, d+1);
+                pR->left = nullptr;
             }
             else {
                 delete pR;
                 return nullptr;
             }
-            // return pR;
+            return pR;
         }
-        // if (point[cd] < pR->data[cd])
-        //     pR->left = removePoint(pR->left, point, d+1);
-        else pR->right = removePoint(pR->right, point, d+1);
-        // delete pR;
+        if (point[cd] < pR->data[cd])
+            pR->left = removePoint(pR->left, point, d+1);
+        else 
+            pR->right = removePoint(pR->right, point, d+1);
         return pR;
     };
     //kDTreeNode* removePoint(const vector<int> &point) { return removePoint(this->root, point, 0); }
@@ -129,10 +135,7 @@ private:
 public:
     kDTree(int k = 2): k(k), root(nullptr), count(0) {};
     ~kDTree() {
-        if (this->root) {
-            clear(this->root);
-            count = 0;
-        }
+        this->clear(this->root);
     };
 
     const kDTree &operator=(const kDTree &other) {
@@ -162,8 +165,8 @@ public:
     void nearestNeighbour(const vector<int> &target, kDTreeNode *&best);
     void kNearestNeighbour(const vector<int> &target, int k, vector<kDTreeNode *> &bestList);
 
-    kDTreeNode* findMin(kDTreeNode* pR, int dim) { return findMin(pR, dim, 0); };
-    kDTreeNode* findMin(int dim) { return findMin(this->root, dim, 0); };
+    kDTreeNode* findMin(kDTreeNode* pR, const int dim) { return findMin(pR, dim, 0); };
+    kDTreeNode* findMin(const int dim) { return findMin(this->root, dim, 0); };
     // assign vector a = vector b
     void copyPoint(vector<int> &a, const vector<int> &b) {
         for (int i = 0; i < this->k; i++) {
