@@ -169,7 +169,7 @@ int main(int argc, const char *argv[])
     tree.insert({8, 1});
     tree.insert({3, 5});
     tree.insert({9, 2});
-    tree.remove({5, 6});
+    // tree.remove({5, 6});
     tree.preorderTraversal();
     return 0;
 }
