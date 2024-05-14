@@ -46,49 +46,43 @@ kDTreeNode* kDTree::buildTree(vector<vector<int>> &pointList, int d) {
 }
 
 //public:
-void kDTree::inorderTraversal(kDTreeNode* root, int &count) const {
-    if (!root) return;
-    inorderTraversal(root->left, count);
-    if (count <= 1) cout << *root;
-    else {
-            cout << *root << " ";
-            count--;
-    }
-    inorderTraversal(root->right, count);
+string kDTree::inorderTraversal(kDTreeNode* root
+) const {
+    if (!root) return "";
+    stringstream ss;
+    ss << inorderTraversal(root->left);
+    ss << *root << " ";
+    ss << inorderTraversal(root->right);
+    return ss.str();
 };
 void kDTree::inorderTraversal() const{
-    int tmp = this->count;
-    this->inorderTraversal(this->root, tmp);
+    cout << this->inorderTraversal(this->root);
 };
 
-void kDTree::preorderTraversal(kDTreeNode* root, int &count) const {
-    if (!root) return;
-    if (count <= 1) cout << *root;
-    else {
-            cout << *root << " ";
-            count--;
-        }
-    preorderTraversal(root->left, count);
-    preorderTraversal(root->right, count);
+string kDTree::preorderTraversal(kDTreeNode* root) const {
+    if (!root) return "";
+    stringstream ss;
+    ss << *root << " ";
+    ss << preorderTraversal(root->left);
+    ss << preorderTraversal(root->right);
+    string res = ss.str();
+    res.resize(res.size() - 1);
+    return res;
 };
 void kDTree::preorderTraversal() const{
-    int tmp = this->count;
-    this->preorderTraversal(this->root, tmp);
+    cout << this->preorderTraversal(this->root) << "o";
 };
 
-void kDTree::postorderTraversal(kDTreeNode* root, int &count) const {
-    if (!root) return;
-    postorderTraversal(root->left, --count);
-    postorderTraversal(root->right, --count);
-    if (count <= 1) cout << *root;
-    else {
-            cout << *root << " ";
-            count--;
-    }
+string kDTree::postorderTraversal(kDTreeNode* root) const {
+    if (!root) return "";
+    stringstream ss;
+    ss << postorderTraversal(root->left);
+    ss << postorderTraversal(root->right);
+    ss << *root << " ";
+    return ss.str();
 };
 void kDTree::postorderTraversal() const{
-    int tmp = this->count;
-    this->postorderTraversal(this->root, tmp);
+    cout << this->postorderTraversal(this->root);
 };
 
 int kDTree::height(kDTreeNode* root) const{
@@ -115,14 +109,14 @@ void kDTree::insert(const vector<int> &point) {
 
 void kDTree::remove(const vector<int> &point){
     if (!search(point)) {
-        cout << "nothing";
         return;
     }
-    kDTreeNode* tmp = removePoint(point);
-    if (!tmp && this->count > 1) this->count--;
-    else if (!tmp && this->count <= 1) this->count = 0;
-    else this->count--;
-    cout << this->count << " ";
+    // kDTreeNode* tmp = removePoint(point);
+    // if (!tmp && this->count > 1) this->count--;
+    // else if (!tmp && this->count <= 1) this->count = 0;
+    // else this->count--;
+    this->root = removePoint(this->root,point,0);
+    this->count--;
     return;
 };
 

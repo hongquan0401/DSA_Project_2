@@ -51,9 +51,9 @@ private:
         pNew->right = deepCopyNode(pR->right);
         return pNew;
     };
-    void inorderTraversal(kDTreeNode* root, int &count) const;
-    void preorderTraversal(kDTreeNode* root, int &count) const;
-    void postorderTraversal(kDTreeNode* root, int &count) const;
+    string inorderTraversal(kDTreeNode* root) const;
+    string preorderTraversal(kDTreeNode* root) const;
+    string postorderTraversal(kDTreeNode* root) const;
     int height(kDTreeNode* root) const;
     int leafCount(kDTreeNode* root) const;
     void runDim(int& dim) { if (++dim >= k) dim = 0; }
@@ -65,15 +65,13 @@ private:
     }
     bool search(kDTreeNode* pR, const vector<int> &point, int dim) {
         if (!pR) return false;
-        if (samePoint(pR->data,point)) return true;
+        if (samePoint(pR->data, point)) return true;
         dim %= this->k;
         if (point[dim] < pR->data[dim]) { 
-            cout << "left ";
-            return search(pR->left,point,++dim);
+            return search(pR->left, point, ++dim);
         }
         else {
-            cout << "right ";
-            return search(pR->right,point,++dim);
+            return search(pR->right, point, ++dim);
         }
     }
     // find min point in particular dim value
@@ -89,41 +87,44 @@ private:
         d %= this->k;
         if (alpha == d) {
             if (!root->left) return root;
-            return findMin(root,alpha,d+1);
+            return findMin(root, alpha, (d + 1) % k);
         }
-        return minPoint(root,findMin(root->left,alpha,d+1),findMin(root->right,alpha,d+1),alpha);
+        return minPoint(root, findMin(root->left, alpha, d + 1), findMin(root->right, alpha, d + 1), alpha);
     }
     kDTreeNode* removePoint(kDTreeNode* pR, const vector<int> &point, int d) {
         if (!pR) return nullptr;
         int cd = d % this->k;
-        if (samePoint(pR->data,point)) {
+        if (samePoint(pR->data, point)) {
             if (pR->right) {
-                kDTreeNode* min = findMin(pR->right,cd);
-                copyPoint(pR->data,min->data);
-                pR->right = removePoint(pR->right,min->data,d+1);
+                kDTreeNode* min = findMin(pR->right, cd);
+                // copyPoint(pR->data, min->data);
+                pR->data = min->data;
+                pR->right = removePoint(pR->right, min->data, d+1);
             }
             else if (pR->left){
-                kDTreeNode* min = findMin(pR->left,cd);
-                copyPoint(pR->data,min->data);
-                pR->right = removePoint(pR->left,min->data,d+1);
+                kDTreeNode* min = findMin(pR->left, cd);
+                // copyPoint(pR->data, min->data);
+                pR->data = min->data;
+                pR->right = removePoint(pR->left, min->data, d+1);
             }
             else {
                 delete pR;
                 return nullptr;
             }
-            return pR;
+            // return pR;
         }
-        if (point[cd] < pR->data[cd])
-            pR->left = removePoint(pR->left,point,d+1);
-        else pR->right = removePoint(pR->right,point,d+1);
+        // if (point[cd] < pR->data[cd])
+        //     pR->left = removePoint(pR->left, point, d+1);
+        else pR->right = removePoint(pR->right, point, d+1);
+        // delete pR;
         return pR;
     };
-    kDTreeNode* removePoint(const vector<int> &point) { return removePoint(this->root,point,0); }
+    //kDTreeNode* removePoint(const vector<int> &point) { return removePoint(this->root, point, 0); }
     void mergeSort(vector<vector<int>> &list, int d);
     kDTreeNode* buildTree(vector<vector<int>> &pointList, int d);
 
     kDTreeNode* nearestNeighbour(kDTreeNode* pR, const vector<int> &target, int d);
-    kDTreeNode* knearestNeighbour(kDTreeNode* pR, const vector<int> &target, int k, int d,
+    kDTreeNode* knearestNeighbour(kDTreeNode* pR, const vector<int> &target, int k, int d, 
                                         vector<kDTreeNode*> &list);
 public:
     kDTree(int k = 2): k(k), root(nullptr), count(0) {};
@@ -161,10 +162,10 @@ public:
     void nearestNeighbour(const vector<int> &target, kDTreeNode *&best);
     void kNearestNeighbour(const vector<int> &target, int k, vector<kDTreeNode *> &bestList);
 
-    kDTreeNode* findMin(kDTreeNode* pR, int dim) { return findMin(pR,dim,0); };
-    kDTreeNode* findMin(int dim) { return findMin(this->root,dim,0); };
+    kDTreeNode* findMin(kDTreeNode* pR, int dim) { return findMin(pR, dim, 0); };
+    kDTreeNode* findMin(int dim) { return findMin(this->root, dim, 0); };
     // assign vector a = vector b
-    void copyPoint(vector<int> &a,const vector<int> &b) {
+    void copyPoint(vector<int> &a, const vector<int> &b) {
         for (int i = 0; i < this->k; i++) {
             a[i] = b[i];
         }
@@ -177,10 +178,10 @@ private:
     int k;
 
 public:
-    kNN(int k = 5);
-    void fit(Dataset &X_train, Dataset &y_train);
-    Dataset predict(Dataset &X_test);
-    double score(const Dataset &y_test, const Dataset &y_pred);
+    kNN(int k = 5): k(k) {}
+    void fit(Dataset &X_train, Dataset &y_train) { return; }
+    Dataset predict(Dataset &X_test) { return X_test; }
+    double score(const Dataset &y_test, const Dataset &y_pred) { return 0.0; }
 };
 
 // Please add more or modify as needed
