@@ -104,13 +104,13 @@ private:
                 kDTreeNode* min = findMin(pR->right, cd, 1);
                 // copyPoint(pR->data, min->data);
                 pR->data = min->data;
-                pR->right = removePoint(pR->right, min->data, d+1);
+                pR->right = removePoint(pR->right, min->data, d + 1);
             }
             else if (pR->left){
                 kDTreeNode* min = findMin(pR->left, cd, 1);
                 // copyPoint(pR->data, min->data);
                 pR->data = min->data;
-                pR->right = removePoint(pR->left, min->data, d+1);
+                pR->right = removePoint(pR->left, min->data, d + 1);
                 pR->left = nullptr;
             }
             else {
@@ -120,9 +120,9 @@ private:
             return pR;
         }
         if (point[cd] < pR->data[cd])
-            pR->left = removePoint(pR->left, point, d+1);
+            pR->left = removePoint(pR->left, point, d + 1);
         else 
-            pR->right = removePoint(pR->right, point, d+1);
+            pR->right = removePoint(pR->right, point, d + 1);
         return pR;
     };
     //kDTreeNode* removePoint(const vector<int> &point) { return removePoint(this->root, point, 0); }
