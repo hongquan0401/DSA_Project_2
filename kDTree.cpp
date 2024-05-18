@@ -8,8 +8,8 @@
 void kDTree::mergeSort(vector<vector<int>> &list, int d) {
     if (list.size() < 2) return;
     int mid = list.size()/2;
-    vector<vector<int>> leftList(list.begin(), list.begin()+mid), 
-                        rightList(list.begin()+mid, list.end());
+    vector<vector<int>> leftList(list.begin(), list.begin() + mid), 
+                        rightList(list.begin() + mid, list.end());
     mergeSort(leftList, d);
     mergeSort(rightList, d);
     int nL = leftList.size(), 
@@ -40,8 +40,8 @@ kDTreeNode* kDTree::buildTree(vector<vector<int>> &pointList, int d) {
 
     // recursion
 
-    pR->left = buildTree(leftList, (d+1)%k);
-    pR->right = buildTree(rightList, (d+1)%k);
+    pR->left = buildTree(leftList, (d + 1) % k);
+    pR->right = buildTree(rightList, (d + 1) % k);
     return pR;
 }
 
@@ -137,6 +137,7 @@ void kDTree::buildTree(const vector<vector<int>> &pointList){
     }
     
     vector<vector<int>> list(pointList.begin(), pointList.end());
+    this->k = pointList[0].size();
     this->root = buildTree(list, 0);
     return;
 };
@@ -246,4 +247,112 @@ void kDTree::kNearestNeighbour(const vector<int> &target, int k, vector<kDTreeNo
     knearestNeighbour(this->root, target, k, 0, bestList);
     return;
 };
+
+kDTreeNode* kDTree::buildTree_v2(vector<vector<int>> &v_X, int d, const vector<vector<int>> &label) {
+    if (v_X.empty()) return nullptr;
+    int mid = ((int)v_X.size() - 1)/2;
+    for (size_t i = 0; i < v_X.size(); i++) {
+        v_X[i].push_back(label[i].front());
+    }
+    mergeSort(v_X, d);
+    int lb = v_X[mid].back();
+    kDTreeNode* pR = new kDTreeNode(v_X[mid], lb);
+
+    // split pointList to left and right
+
+    vector<vector<int>> leftList, rightList;
+    for (int z = 0; z < mid; z++) {
+        leftList.push_back(v_X[z]);
+    }
+    for(size_t z = mid + 1; z < v_X.size(); z++) {
+        rightList.push_back(v_X[z]);
+    }
+
+    // recursion
+
+    pR->left = buildTree(leftList, (d + 1) % this->k);
+    pR->right = buildTree(rightList, (d + 1) % this->k);
+    return pR;
+}
+
+void kDTree::buildTree_v2(const vector<vector<int>> &v_X, const vector<vector<int>> &v_y) {
+    if (this->root) clear(this->root);
+    this->count = v_X.size();
+    if (count == 0) {
+        this->root = nullptr;
+        return;
+    }
+    vector<vector<int>> list_X(v_X.begin(),v_X.end());
+    this->k = v_X[0].size();
+    this->root = buildTree_v2(list_X, 0, v_y);
+    return;
+}
 // end Class kDTree
+
+// Class kNN
+
+void kNN::fit(Dataset &X_train, Dataset &y_train) {
+    vector<vector<int>> v_y, v_X; //to build X_tree and y_tree
+
+    // transform Dataset y_train -> vector<vector<int>>, pre-condition of buildtree function
+    while (y_train.data.size()){
+        vector<int> tmp(y_train.data.front().begin(),y_train.data.front().end());
+        y_train.data.pop_front();
+        v_y.push_back(tmp);
+    }
+
+    // transform Dataset X_train -> vector<vector<int>>, pre-condition of buildtree function
+    while (X_train.data.size()) {
+        vector<int> tmp(X_train.data.front().begin(),X_train.data.front().end());
+        X_train.data.pop_front();
+        v_X.push_back(tmp);
+    }
+
+    // build tree
+    this->X_tree.buildTree_v2(v_X,v_y);
+}
+
+Dataset kNN::predict(Dataset &X_test) {
+    int len = X_test.data.size();
+    Dataset y_pred;
+    // reference array to count freq of bestList label
+    int ref_arr[10] = { 0 };
+    //run row by row X_test
+    for (int i = 0; i < len; i++) {
+        vector<kDTreeNode*> bestList; // vector knearest neighbour
+        vector<int> target(X_test.data.begin(),X_test.data.end());
+        X_tree.kNearestNeighbour(target,this->k,bestList);
+        // vector save label of bestList
+        vector<int> findMode_label;
+        for (int j = 0; j < this->k; j++) {
+            findMode_label.push_back(bestList[j]->label);
+        }
+        // find Mode label of bestList
+        int max = 0;
+        for (int j = 0; j < this->k; j++) {
+            ref_arr[findMode_label[j]]++;
+            if (ref_arr[findMode_label[j]] > max) max = findMode_label[j];
+        }
+        // push predict value to y_pred
+        list<int> temp;
+        temp.push_back(max);
+        y_pred.data.push_back(temp);
+    }
+    return y_pred;
+}
+
+double kNN::score(const Dataset &y_test, const Dataset &y_pred) {
+    int S = y_test.data.size();
+    Dataset y_T = y_test, y_P =y_pred;
+    int n_CorrectImg = 0;
+    for (int i = 0; i < S; i++) {
+        if (y_T.data.front().front() == y_P.data.front().front()) {
+            n_CorrectImg++;
+            y_T.data.pop_front();
+            y_P.data.pop_front();
+        }
+    }
+    double accuracy = (double)n_CorrectImg / S;
+    return accuracy;
+}
+// end Class Knn

@@ -161,17 +161,19 @@ void tc7()
 
 int main(int argc, const char *argv[])
 {
+    tc3();
+    return 0;
     // tc0();
-    kDTree tree(2);
-    tree.insert({5, 6});
-    tree.insert({2, 2});
-    tree.insert({7, 3});
-    tree.insert({2, 8});
-    tree.insert({8, 1});
-    tree.insert({3, 5});
-    tree.insert({9, 2});
-    tree.remove({5, 6});
-    tree.preorderTraversal();
+    // kDTree tree(2);
+    // tree.insert({5, 6});
+    // tree.insert({2, 2});
+    // tree.insert({7, 3});
+    // tree.insert({2, 8});
+    // tree.insert({8, 1});
+    // tree.insert({3, 5});
+    // tree.insert({9, 2});
+    // tree.remove({5, 6});
+    // tree.preorderTraversal();
     // tree.insert({30, 40});
     // tree.insert({5, 25});
     // tree.insert({70, 70});
@@ -180,5 +182,4 @@ int main(int argc, const char *argv[])
     // tree.insert({35, 45});
     // tree.remove({70, 70});
     // tree.preorderTraversal();
-    return 0;
 }

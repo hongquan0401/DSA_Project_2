@@ -8,11 +8,13 @@ struct kDTreeNode
     vector<int> data;
     kDTreeNode *left;
     kDTreeNode *right;
-    kDTreeNode(vector<int> data, kDTreeNode *left = nullptr, kDTreeNode *right = nullptr)
+    int label;
+    kDTreeNode(vector<int> data, int label = 0, kDTreeNode *left = nullptr, kDTreeNode *right = nullptr)
     {
         this->data = data;
         this->left = left;
         this->right = right;
+        this->label = label;
     }
 
     friend ostream &operator<<(ostream &os, const kDTreeNode &node)
@@ -128,6 +130,7 @@ private:
     //kDTreeNode* removePoint(const vector<int> &point) { return removePoint(this->root, point, 0); }
     void mergeSort(vector<vector<int>> &list, int d);
     kDTreeNode* buildTree(vector<vector<int>> &pointList, int d);
+    kDTreeNode* buildTree_v2(vector<vector<int>> &v_X, int d, const vector<vector<int>> &label);
 
     kDTreeNode* nearestNeighbour(kDTreeNode* pR, const vector<int> &target, int d);
     kDTreeNode* knearestNeighbour(kDTreeNode* pR, const vector<int> &target, int k, int d, 
@@ -167,24 +170,23 @@ public:
 
     kDTreeNode* findMin(kDTreeNode* pR, const int dim) { return findMin(pR, dim, 0); };
     kDTreeNode* findMin(const int dim) { return findMin(this->root, dim, 0); };
-    // assign vector a = vector b
-    void copyPoint(vector<int> &a, const vector<int> &b) {
-        for (int i = 0; i < this->k; i++) {
-            a[i] = b[i];
-        }
-    };
+    void buildTree_v2(const vector<vector<int>> &v_X, const vector<vector<int>> &v_y);
 };
 
 class kNN
 {
 private:
     int k;
-
+    kDTree X_tree;
+    // kDTree y_tree;
+    // Dataset X_train, y_train;
+    // int nRow_train, nCol_train;
 public:
-    kNN(int k = 5): k(k) {}
-    void fit(Dataset &X_train, Dataset &y_train) { return; }
-    Dataset predict(Dataset &X_test) { return X_test; }
-    double score(const Dataset &y_test, const Dataset &y_pred) { return 0.0; }
+    kNN(int k = 5): k(k), X_tree(kDTree()) {}
+    // X_train(Dataset()), y_train(Dataset()), nRow_train(0), nCol_train(0) {}
+    void fit(Dataset &X_train, Dataset &y_train);
+    Dataset predict(Dataset &X_test);
+    double score(const Dataset &y_test, const Dataset &y_pred);
 };
 
 // Please add more or modify as needed
