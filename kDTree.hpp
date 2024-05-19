@@ -127,10 +127,10 @@ private:
             pR->right = removePoint(pR->right, point, d + 1);
         return pR;
     };
-    //kDTreeNode* removePoint(const vector<int> &point) { return removePoint(this->root, point, 0); }
+
     void mergeSort(vector<vector<int>> &list, int d);
     kDTreeNode* buildTree(vector<vector<int>> &pointList, int d);
-    kDTreeNode* buildTree_v2(vector<vector<int>> &v_X, int d, const vector<vector<int>> &label);
+    kDTreeNode* buildTree_v2(vector<vector<int>> &v_X, int d, const int k_dim);
 
     kDTreeNode* nearestNeighbour(kDTreeNode* pR, const vector<int> &target, int d);
     kDTreeNode* knearestNeighbour(kDTreeNode* pR, const vector<int> &target, int k, int d, 
@@ -178,12 +178,8 @@ class kNN
 private:
     int k;
     kDTree X_tree;
-    // kDTree y_tree;
-    // Dataset X_train, y_train;
-    // int nRow_train, nCol_train;
 public:
     kNN(int k = 5): k(k), X_tree(kDTree()) {}
-    // X_train(Dataset()), y_train(Dataset()), nRow_train(0), nCol_train(0) {}
     void fit(Dataset &X_train, Dataset &y_train);
     Dataset predict(Dataset &X_test);
     double score(const Dataset &y_test, const Dataset &y_pred);
